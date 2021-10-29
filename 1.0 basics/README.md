@@ -8,12 +8,12 @@ Create a non-root user
 An account on Docker Hub if you wish to create your own images and push them to Docker Hub
 ```
 
-##
+## Login in to your instance
 ```sh
 ssh username@<PUBLIC_IP_ADDRESS>
 ```
 
-Installing Docker
+## Installing Docker
 
 Install the Docker prerequisites:
 ```sh
@@ -30,6 +30,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
 ```
 
+## Install Docker
 ```sh
 #Install Docker:
 sudo apt install docker-ce -y
@@ -88,3 +89,5 @@ Using docker, run the hello-world image to verify that the environment is set up
 ```sh
 docker run hello-world
 ```
+
+## Working With Prebuilt Docker Images
