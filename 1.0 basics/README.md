@@ -91,3 +91,152 @@ docker run hello-world
 ```
 
 ## Working With Prebuilt Docker Images
+
+### Explore Docker Hub
+```
+Sign in to Docker Hub.
+At the top of the page, search for "httpd".
+In the left-hand menu, filter for Application Infrastructure, and Official Images.
+Select the httpd project.
+At the top of the page, click the Tags tab.
+Under latest, select linux/amd64.
+Back in the list of available images, select nginx
+Review the How to use this image section.
+```
+
+### Working with httpd
+In the Docker Instance, verify that docker is installed:
+
+```sh
+docker ps
+```
+
+Using docker, pull the httpd:2.4 image:
+```sh
+docker pull httpd:2.4
+```
+
+Run the image
+```sh
+docker run --name httpd -p 8080:80 -d httpd:2.4
+```
+This runs on port 80 on the docker container and exposed on port 8080 on the server. 
+
+Check the status of the container:
+```sh
+docker ps
+```
+
+In a web browser, test connectivity to the container:
+```sh
+<PUBLIC_IP_ADDRESS>:8080
+```
+
+#### Run a Copy of the Website in httpd
+
+Clone the demo repository:
+```sh
+git clone https://github.com/ktechhub/web-test.git
+
+cd web-test
+```
+
+Stop the httpd container:
+```sh
+docker stop httpd
+```
+
+Remove the httpd container:
+```sh
+docker rm httpd
+```
+
+Verify that the container has been removed:
+```sh
+docker ps -a
+```
+
+
+Run the container with the website data:
+```sh
+docker run --name httpd -p 8080:80 -v $(pwd):/usr/local/apache2/htdocs:ro -d httpd:2.4
+```
+
+Verify that the container is running:
+```sh
+docker ps -a
+```
+
+In a web browser, test connectivity to the container:
+```sh
+<PUBLIC_IP_ADDRESS>:8080
+```
+
+### Working with Nginx
+
+Using docker, pull the latest version of nginx:
+```sh
+docker pull nginx
+```
+
+Verify that the image was pulled successfully:
+```sh
+docker images
+```
+Run the container using the nginx image:
+```sh
+docker run --name nginx -p 8081:80 -d nginx 
+```
+
+Check the status of the container:
+```sh
+docker ps
+```
+
+Verify connectivity to the nginx container:
+```sh
+<PUBLIC_IP_ADDRESS>:8081
+```
+
+#### Run a Copy of the Website in Nginx
+
+Stop and remove the nginx container:
+```sh
+docker stop nginx
+docker rm nginx
+```
+
+Verify that the container has been removed:
+```sh
+docker ps -a
+```
+
+Run the nginx container, and mount the website data:
+```sh
+docker run --name nginx -v $(pwd):/usr/share/nginx/html:ro -p 8081:80 -d nginx
+```
+
+Check the status of the container:
+```sh
+docker ps
+```
+
+In a web browser, verify connectivity to the container:
+```sh
+<PUBLIC_IP_ADDRESS>:8081
+```
+
+Stop the nginx container:
+```sh
+docker stop nginx
+```
+
+Remove the nginx container:
+```sh
+docker rm nginx
+```
+
+Verify that the container has been removed:
+```sh
+docker ps -a
+```
