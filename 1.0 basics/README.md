@@ -240,3 +240,155 @@ Verify that the container has been removed:
 ```sh
 docker ps -a
 ```
+
+
+## Handcrafting a Container Image
+
+### Get and Run the Base Image
+
+Retrieve the httpd image:
+```sh
+docker pull httpd:2.4
+```
+Run the image:
+```sh
+docker run --name webtemplate -d httpd:2.4
+```
+Check the status of the webtemplate container:
+```sh
+docker ps
+```
+
+### Install Tools and Code in the Container
+
+Log in to the container:
+```sh
+docker exec -it webtemplate bash
+```
+
+Run apt update and install git
+```sh
+apt update && apt install git -y
+```
+
+Clone the website code from GitHub:
+```sh
+git clone https://github.com/ktechhub/web-test.git /tmp/web-test
+```
+Verify that the code was cloned successfully:
+```sh
+ls -l /tmp/web-test
+```
+
+List the files in the htdocs/ directory:
+```sh
+ls -l htdocs/
+```
+
+Remove the index.html file:
+```sh
+rm htdocs/index.html
+```
+Copy the webcode from /tmp/ to the htdocs/ folder:
+```sh
+cp -r /tmp/web-test/* htdocs/
+```
+Verify that they were copied over successfully:
+```sh
+ls -l htdocs/
+```
+Exit the container:
+```sh
+exit
+```
+
+### Create an Image from the Container
+Copy the Container ID:
+```sh
+docker ps
+```
+
+Create an image from the container:
+```sh
+docker commit <CONTAINER_ID> example/webtest:v1
+```
+
+Verify that the image was created successfully:
+```sh
+docker images
+```
+
+Take note of the image size.
+
+### Clean up the Template for a Second Version
+Log in to the container:
+```sh
+docker exec -it webtemplate bash
+```
+Remove the cloned code from the /tmp/ directory:
+```sh
+rm -rf /tmp/web-test/
+```
+
+Use apt to uninstall git and clean the cache:
+
+```sh
+apt remove git -y && apt autoremove -y && apt clean 
+```
+
+Exit the container:
+```sh
+exit
+```
+
+Check the status of the container:
+```sh
+docker ps
+```
+
+Create an image from the updated container:
+
+```sh
+docker commit <CONTAINER_ID> example/webtest:v2
+```
+
+Verify that both images are now running:
+```sh
+docker images  
+```
+
+Delete the v1 image:
+```sh
+docker rmi example/webtest:v1
+```
+
+
+### Run Multiple Containers from the Image
+Run multiple containers using the new image:
+```sh
+docker run -d --name web1 -p 8081:80 example/webtest:v2
+docker run -d --name web2 -p 8082:80 example/webtest:v2
+docker run -d --name web3 -p 8083:80 example/webtest:v2
+```
+
+Check the status of the containers:
+```sh
+docker ps
+```
+
+Stop the base webtemplate image:
+```sh
+docker stop webtemplate
+```
+
+Verify that only the created containers are running:
+```sh
+docker ps
+```
+
+Using a web browser, verify that the containers are running successfully:
+```sh
+<SERVER_PUBLIC_IP_ADDRESS>:8081
+<SERVER_PUBLIC_IP_ADDRESS>:8082
+<SERVER_PUBLIC_IP_ADDRESS>:8083
+```
